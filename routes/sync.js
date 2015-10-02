@@ -10,21 +10,43 @@ var Sync = {
             res.write("It starts to sync\n");
             var lyrics = result.toString();
             var codeWithBracket = "(A48)";
-            var firstIndex = getFirstIndexOfLyricCode(lyrics, codeWithBracket);
-            var secondIndex = getSecondIndexOfLyricsCode(lyrics, codeWithBracket, firstIndex);
-            //TODO: thirdIndex might be -1, will handle later
-            var thirdIndex = getThirdIndexOfLyricsCode(lyrics, codeWithBracket, secondIndex);
-
-            var firstLyrics = lyrics.substr(firstIndex, secondIndex-firstIndex);
-            var secondLyrics = lyrics.substr(secondIndex, thirdIndex-secondIndex);
-            var thirdLyrics = lyrics.substr(thirdIndex);
-
-            var langOfFirstLyrics = this.getLang(firstLyrics);
-
-            console.info('first: ', firstLyrics);
-            console.info('second: ', secondLyrics);
-            console.info('third:', thirdLyrics);
+            var lyricsArray = Sync.getSortedLyricsArray(codeWithBracket, lyrics);
+            console.info("english", lyricsArray[0]);
+            console.info("chinese", lyricsArray[1]);
+            console.info("korean", lyricsArray[2]);
         });
+    },
+
+    getSortedLyricsArray: function (codeWithBracket, lyrics) {
+        var array =  getLyricsArray(codeWithBracket, lyrics);
+        var sortedArray = [null,null,null];
+
+        var langOfFirstLyric = this.getLang(array[0]);
+        if(langOfFirstLyric == "English")
+            sortedArray[0] = array[0];
+        else if(langOfFirstLyric == "Chinese")
+            sortedArray[1] = array[0];
+        else
+            sortedArray[2] = array[0];
+
+        var langOfSecondLyric = this.getLang(array[1]);
+        if(langOfSecondLyric == "English")
+            sortedArray[0] = array[1];
+        else if(langOfSecondLyric == "Chinese")
+            sortedArray[1] = array[1];
+        else
+            sortedArray[2] = array[1];
+
+        if(array[2]){
+            var langOfThirdLyric = this.getLang(array[2]);
+            if(langOfThirdLyric == "English")
+                sortedArray[0] = array[2];
+            else if(langOfThirdLyric == "Chinese")
+                sortedArray[1] = array[2];
+            else
+                sortedArray[2] = array[2];
+        }
+        return sortedArray;
     },
 
     getLang: function(lyrics){
@@ -80,6 +102,23 @@ var Sync = {
         }).length;
         return korCharCount/20;
     },
+}
+
+function getLyricsArray(codeWithBracket, lyrics) {
+    var firstIndex = getFirstIndexOfLyricCode(lyrics, codeWithBracket);
+    var secondIndex = getSecondIndexOfLyricsCode(lyrics, codeWithBracket, firstIndex);
+    var thirdIndex = getThirdIndexOfLyricsCode(lyrics, codeWithBracket, secondIndex);
+    var array = [];
+    if(thirdIndex>-1){
+        array.push(lyrics.substr(firstIndex, secondIndex-firstIndex));
+        array.push(lyrics.substr(secondIndex, thirdIndex-secondIndex));
+        array.push(lyrics.substr(thirdIndex));
+    }else{
+        array.push(lyrics.substr(firstIndex, secondIndex-firstIndex));
+        array.push(lyrics.substr(secondIndex));
+        array.push(null);
+    }
+    return array;
 }
 
 function getFirstIndexOfLyricCode(lyrics, codeWithBracket){
