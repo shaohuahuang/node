@@ -1,19 +1,41 @@
 var unoconv = require('unoconv');
 var _ = require('underscore');
+var ParseTitle = require('./parse-title');
 
 var Sync = {
     sync : function (req, res, next) {
         unoconv.convert('../docx/(A048) White Lily Of The Natural Temple 圣地中的百合花啊 성지땅의 백합화야.doc','txt', function (err, result) {
             if(err)
                 return next(err);
-
             res.write("It starts to sync\n");
+
+            var title = '(A048) White Lily Of The Natural Temple 圣地中的百合花啊 성지땅의 백합화야';
             var lyrics = result.toString();
             var codeWithBracket = "(A48)";
             var lyricsArray = Sync.getSortedLyricsArray(codeWithBracket, lyrics);
+            var titlesArray = ParseTitle.getTitlesArray(title);
+
+            var engLyrics = lyricsArray[0];
+            var engTitle = titlesArray[0];
+            console.info("english lyrics", engLyrics);
+            console.info("english title", engTitle);
+
+            Sync.upsertLyrics(
+                {code: "A48", language: "English"},
+                {code: "A48", language: "English", title: engTitle, content: engLyrics, date: new Date()},
+                req.lyricsModel
+            );
+
             console.info("english", lyricsArray[0]);
             console.info("chinese", lyricsArray[1]);
             console.info("korean", lyricsArray[2]);
+        });
+    },
+
+    upsertLyrics: function (query, data, model, callback) {
+        model.findOneAndUpdate(query, data, {upsert: true}, function (err, doc) {
+            if(callback)
+                callback(doc);
         });
     },
 

@@ -8,6 +8,11 @@ var syncRoute = require('./routes/sync');
 var http = require('http');
 var unoconv = require('unoconv');
 
+var mongoose = require('mongoose');
+var Lyrics = require('./models/lyrics');
+var dbUrl = process.env.MONGOHQ_URL || 'mongodb://@localhost:27017/dev';
+var db = mongoose.connect(dbUrl,{safe: true});
+
 var app = express();
 
 // view engine setup
@@ -21,6 +26,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+//assign models object to req object
+app.use(function (req, res, next) {
+  req.lyricsModel = Lyrics;
+  return next();
+});
 app.use('/sync', syncRoute.sync);
 
 // catch 404 and forward to error handler
@@ -29,6 +40,7 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
+
 
 var server = http.createServer(app);
 var boot = function () {
