@@ -10,8 +10,12 @@ var ParseTitle = {
         return titlesArray;
     },
     getEnglishTitle: function(title, indexOfFirstChinese, indexOfFirstKorean){
-        if(indexOfFirstChinese<0)
-            return title.substr(0, indexOfFirstKorean).trim();
+        if(indexOfFirstChinese<0){
+            if(indexOfFirstKorean > -1)
+                return title.substr(0, indexOfFirstKorean).trim();
+            else
+                return title;
+        }
         if(indexOfFirstChinese == 0)
             return null;
         return title.substr(0, indexOfFirstChinese).trim();
@@ -22,7 +26,9 @@ var ParseTitle = {
         return title.substr(indexOfFirstChinese, indexOfFirstKorean-indexOfFirstChinese).trim();
     },
     getKoreanTitle: function(title, indexOfFirstKorean){
-        return title.substr(indexOfFirstKorean).trim();
+        if(indexOfFirstKorean > -1)
+            return title.substr(indexOfFirstKorean).trim();
+        return null;
     },
 }
 

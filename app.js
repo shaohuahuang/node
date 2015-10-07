@@ -32,7 +32,7 @@ app.use(function (req, res, next) {
   req.lyricsModel = Lyrics;
   return next();
 });
-app.use('/sync', syncRoute.sync);
+app.use('/sync', syncRoute.syncAllFiles);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
