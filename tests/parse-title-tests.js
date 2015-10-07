@@ -56,4 +56,32 @@ describe('parse title module', function() {
         assert.equal('荣耀的主', titlesArray[1]);
         assert.equal('영광의 주', titlesArray[2]);
     });
+
+    it('get titles of different lang special case 5', function () {
+        var title = '(C012) With the Lord Forever 与主直到永远 주님과 영원토록 (2)';
+        var titlesArray = ParseTitle.getTitlesArray(title);
+        assert.equal('With the Lord Forever', titlesArray[0]);
+        assert.equal('与主直到永远', titlesArray[1]);
+        assert.equal('주님과 영원토록 (2)', titlesArray[2]);
+    });
+
+    it('get titles of different lang special case 6', function () {
+        var title = '(B174) When The Sun Rises Over The Hill 旭日在山丘升起时 아침에 동산 해 뜨면 (old We are one 우리는 하나)';
+        var titlesArray = ParseTitle.getTitlesArray(title);
+        assert.equal('When The Sun Rises Over The Hill', titlesArray[0]);
+        assert.equal('旭日在山丘升起时', titlesArray[1]);
+        assert.equal('아침에 동산 해 뜨면 (old We are one 우리는 하나)', titlesArray[2]);
+    });
+
+    it('get titles of different lang special case 7', function () {
+        var title = '(B157) Whenever Or Wherever 不论何时或何处(原或站或坐都想着主)(NEW)';
+        var titlesArray = ParseTitle.getTitlesArray(title);
+        assert.equal('Whenever Or Wherever', titlesArray[0]);
+        assert.equal('不论何时或何处(原或站或坐都想着主)(NEW)', titlesArray[1]);
+        //assert.equal(null, titlesArray[2]);
+    });
+
+    it('check whether eng title is valid.', function () {
+        assert.equal(false, ParseTitle.isEngTitleValid((2)));
+    });
 });

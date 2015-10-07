@@ -1,3 +1,4 @@
+var util = require('../utils/util');
 var ParseTitle = {
     getTitlesArray: function(title){
         title = getTitleWithCodeTrimmed(title);
@@ -18,11 +19,16 @@ var ParseTitle = {
         }
         if(indexOfFirstChinese == 0)
             return null;
-        return title.substr(0, indexOfFirstChinese).trim();
+        var engTitle = title.substr(0, indexOfFirstChinese).trim();
+        if(this.isEngTitleValid(engTitle))
+            return engTitle;
+        return null;
     },
     getChineseTitle: function(title, indexOfFirstChinese, indexOfFirstKorean){
         if(indexOfFirstChinese<0)
             return null;
+        if(indexOfFirstKorean < 0)
+            return title.substr(indexOfFirstChinese).trim();
         return title.substr(indexOfFirstChinese, indexOfFirstKorean-indexOfFirstChinese).trim();
     },
     getKoreanTitle: function(title, indexOfFirstKorean){
@@ -30,6 +36,13 @@ var ParseTitle = {
             return title.substr(indexOfFirstKorean).trim();
         return null;
     },
+    isEngTitleValid: function (title) {
+        for(var i=0;i<title.length;i++){
+            if(!util.isInteger(title[i])&&!util.isExcludedChars(title[i]))
+                return true;
+        }
+        return false;
+    }
 }
 
 function getTitleWithCodeTrimmed(title){
@@ -50,6 +63,7 @@ function getIndexOfFirstKorean(title){
         if(title.charCodeAt(i)>41000)
             return i;
     }
+    return -1;
 }
 
 module.exports = ParseTitle;
