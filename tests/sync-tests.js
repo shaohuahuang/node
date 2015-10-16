@@ -4,7 +4,11 @@ var Sync = require("../routes/sync");
 var mongoose = require('mongoose');
 var Lyrics = require('../models/lyrics');
 var dbUrl = process.env.MONGOHQ_URL || 'mongodb://@localhost:27017/dev';
-var db = mongoose.connect(dbUrl,{safe: true});
+var db;
+
+if(mongoose.connection.readyState==0){
+    db = mongoose.connect(dbUrl,{safe: true});
+}
 
 describe('db tests in syncSingleFile module', function () {
     it('test upsert lyrics', function (done) {
@@ -22,6 +26,5 @@ describe('db tests in syncSingleFile module', function () {
             assert.equal("test content", doc.content);
             done();
         });
-
     });
 });

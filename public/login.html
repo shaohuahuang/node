@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign In</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <script type="text/javascript" src="./javascripts/jQuery/jquery-1.11.1.js"></script>
+    <style type="text/css" src="./javascripts/bootstrap/css/bootstrap.min.css"></style>
+    <style type="text/css" src="./javascripts/bootstrap/css/bootstrap-theme.min.css"></style>
+    <script type="text/javascript" src="./javascripts/bootstrap/js/bootstrap.min.js"></script>
+
+    <link href="./javascripts/bootsex/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./javascripts/bootsex/signin.css" rel="stylesheet">
+    <script src="./javascripts/bootsex/assets/js/ie-emulation-modes-warning.js"></script>
+    <script src="./javascripts/bootsex/assets/js/ie10-viewport-bug-workaround.js"></script>
+    <script src="./javascripts/sha1.js"></script>
+
+    <script>
+        if(localStorage["authenticated"])
+            location = "lyrics";
+        //console.log(localStorage["env"]);
+        $("#username").val(localStorage["username"]);
+        $("#password").val(localStorage["password"]);
+        function login() {
+            var uid = $("#username").val().toLowerCase();
+            var password = $("#password").val();
+            var ts = parseInt((new Date()).getTime() / 1000);
+            var pw = CryptoJS.SHA1(CryptoJS.SHA1(uid + password) + ts);
+            var url = "login?uid=" + uid + "&time=" + ts + "&pw=" + pw;
+
+            $.get(url, function (data) {
+                if (data == 'T' || data == 'S' || data == 'L') {
+                    localStorage["authenticated"] = "authenticated";
+                    localStorage["username"] = uid;
+                    localStorage["password"] = password;
+                    location = "lyrics";
+                }
+                else {
+                    alert("Invalid username and password");
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <form class="form-signin" role="form">
+        <h2 class="form-signin-heading">Please sign in</h2>
+
+        <div id="usernameDiv">
+            <input id="username" type="text" class="form-control" placeholder="Username" name="username" required
+                   autofocus>
+        </div>
+        <div id="passwordDiv">
+            <input id="password" type="password" class="form-control" placeholder="Password" name="password"
+                   required>
+        </div>
+        <div class="checkbox" onclick="remember();">
+            <label>
+                <input type="checkbox" value="remember-me" name="rememberme" value=1> Remember me
+            </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" onclick="event.preventDefault();login()">Sig n in</button>
+    </form>
+</div>
+</body>
+
+</html>

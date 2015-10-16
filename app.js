@@ -5,6 +5,9 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var syncRoute = require('./routes/sync');
+var loginRoute = require('./routes/login');
+var searchRoute = require('./routes/search');
+var openLyricsRoute = require('./routes/open-lyrics');
 var http = require('http');
 var unoconv = require('unoconv');
 
@@ -33,6 +36,15 @@ app.use(function (req, res, next) {
   return next();
 });
 app.use('/sync', syncRoute.syncAllFiles);
+app.get('/', function(req, res, next){
+  res.sendFile('login.html',{root: path.join(__dirname,'public')});
+});
+app.get('/login', loginRoute.authenticate);
+app.get('/open-lyrics', openLyricsRoute.openLyrics);
+app.get('/lyrics', function(req, res, next) {
+    res.sendFile('reactlyrics.html',{root: path.join(__dirname,'public')});
+});
+app.get('/search', searchRoute.search);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
