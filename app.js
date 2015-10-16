@@ -10,7 +10,7 @@ var searchRoute = require('./routes/search');
 var openLyricsRoute = require('./routes/open-lyrics');
 var http = require('http');
 var unoconv = require('unoconv');
- 
+
 var mongoose = require('mongoose');
 var Lyrics = require('./models/lyrics');
 var dbUrl = process.env.MONGOHQ_URL || 'mongodb://@localhost:27017/dev';
