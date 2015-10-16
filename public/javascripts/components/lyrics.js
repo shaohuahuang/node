@@ -39,14 +39,6 @@ class Lyric extends React.Component{
 };
 
 class LyricContent extends React.Component{
-    /*getHtml: function(arr) {
-        var rows = [];
-        arr.forEach(function(e){
-            rows.push(e);
-            rows.push(<br />);
-        });
-        return rows;
-    },*/
     constructor(){
         super();
         this.getContent = this.getContent.bind(this);
